@@ -35,9 +35,17 @@ const navigation = [
   { name: "Recent", href: "#", icon: ClockIcon, current: false },
 ];
 const teams = [
-  { name: "Engineering", href: "#", bgColorClass: "bg-indigo-500" },
-  { name: "Human Resources", href: "#", bgColorClass: "bg-green-500" },
-  { name: "Customer Success", href: "#", bgColorClass: "bg-yellow-500" },
+  { name: "What is 2+2?", href: "#", bgColorClass: "bg-indigo-500" },
+  {
+    name: "Could you search notion for my name?",
+    href: "#",
+    bgColorClass: "bg-indigo-500",
+  },
+  {
+    name: "Who won the world series in 2010?",
+    href: "#",
+    bgColorClass: "bg-indigo-500",
+  },
 ];
 
 export default function RootLayout({
@@ -57,7 +65,8 @@ export default function RootLayout({
         <body class="h-full">
         ```
       */}
-      <div className="min-h-full">
+      <div className="min-h-full flex flex-col lg:flex-row">
+        {/* Mobile Sidebar Popout */}
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
@@ -188,7 +197,7 @@ export default function RootLayout({
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-        <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-gray-200 lg:bg-gray-100 lg:pt-5 lg:pb-4">
+        <div className="hidden lg:grow-0 lg:w-64 lg:fixed lg:inset-y-0 lg:flex lg:flex-col lg:border-r lg:border-gray-200 lg:bg-gray-100 lg:pt-5 lg:pb-4">
           <div className="flex flex-shrink-0 items-center px-6">
             <img
               className="h-8 w-auto"
@@ -420,10 +429,11 @@ export default function RootLayout({
             </nav>
           </div>
         </div>
+
         {/* Main column */}
-        <div className="flex flex-col lg:pl-64">
+        <div className="grow flex flex-col lg:pl-64 items-stretch justify-items-stretch w-full">
           {/* Search header */}
-          <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 border-b border-gray-200 bg-white lg:hidden">
+          <div className="grow-0 sticky top-0 z-10 flex h-16 flex-shrink-0 border-b border-gray-200 bg-white lg:hidden">
             <button
               type="button"
               className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 lg:hidden"
