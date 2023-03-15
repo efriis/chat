@@ -68,27 +68,28 @@ type Message = ChatCompletionResponseMessage;
 const DEFAULT_INIT: Message[] = [
   { role: "system", content: "You are a helpful AI Assistant." },
 ];
-const LARGE_INIT: Message[] = [
-  { role: "system", content: "You are a helpful AI Assistant." },
-  { role: "user", content: "Write a nextjs route" },
-  {
-    role: "assistant",
-    content:
-      "Sure! Here's an example of a basic Next.js route:\n\n```\n// pages/about.js\n\nfunction About() {\n  return (\n    <div>\n      <h1>About Page</h1>\n      <p>This is the about page!</p>\n    </div>\n  )\n}\n\nexport default About;\n```\n\nThis code defines a simple Next.js route that renders an About page with a header and paragraph of text.\n\nTo create a new route, simply create a new file under the `/pages` directory with the desired name (e.g. `contact.js`), and define the route's contents as a React component. Remember to export the component using `export default` so that it can be imported and used elsewhere in your application!",
-  },
-  {
-    role: "user",
-    content:
-      "could you add a login to the middle? and explain the whole thing?",
-  },
-  {
-    role: "assistant",
-    content:
-      'Sure! Here\'s an example of a Next.js route that includes a login form:\n\n```\n// pages/about.js\n\nimport { useState } from "react";\n\nfunction About() {\n  const [email, setEmail] = useState("");\n  const [password, setPassword] = useState("");\n  const [loading, setLoading] = useState(false);\n  const [error, setError] = useState("");\n\n  const handleSubmit = async (event) => {\n    event.preventDefault();\n    setLoading(true);\n    setError("");\n\n    try {\n      // Call your login API here and handle the response\n      setLoading(false);\n    } catch (error) {\n      setError("Invalid email or password");\n      setLoading(false);\n    }\n  };\n\n  return (\n    <div>\n      <h1>About Page</h1>\n      <p>This is the about page!</p>\n\n      <form onSubmit={handleSubmit}>\n        <label>\n          Email:\n          <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} />\n        </label>\n        <br />\n        <label>\n          Password:\n          <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} />\n        </label>\n        <br />\n        {error && <p>{error}</p>}\n        <button disabled={loading}>Login</button>\n      </form>\n    </div>\n  );\n}\n\nexport default About;\n```\n\nHere\'s a breakdown of what\'s happening in the code:\n\n1. We import the `useState` hook from React, which allows us to manage state in our component.\n\n2. We define four state variables using `useState`:\n\n  - `email`: A string representing the user\'s email address.\n  \n  - `password`: A string representing the user\'s password.\n  \n  - `loading`: A boolean representing whether or not the login form is currently being submitted.\n  \n  - `error`: A string representing any error messages that occur during the login process.\n\n3. We define a function `handleSubmit` that will be called when the user submits the login form. \n\n4. In `handleSubmit`, we prevent the default form submission behavior using `event.preventDefault()`, so that we can handle the form submission ourselves.\n\n5. We set `loading` to `true` to indicate that the form submission is in progress.\n\n6. We clear any previous error messages by setting `error` to an empty string.\n\n7. We try to make a request to our login API (you should replace the comments with your actual login API calls). If the request is successful, we can handle the successful login by navigating to the appropriate page. If the request fails, we set `error` to an appropriate string (in this case, "Invalid email or password").\n\n8. In the `return` statement, we render a basic login form with two input fields for email and password, a submit button, and an error message (if applicable). \n\n9. We use the `disabled` attribute on the submit button to prevent the user from submitting the form while a request is in progress (indicated by the `loading` state variable). \n\nSo overall, this example code shows how to create a Next.js route that includes a basic login form. Obviously, you will need to customize this code to meet your specific requirements, such as adding validation to the email and password fields, integrating with your own authentication system, and so on. But this should give you a good starting point to build from!',
-  },
-];
 
-function useChat(initMessages: Message[] = LARGE_INIT) {
+// const DEFAULT_INIT: Message[] = [
+//   { role: "system", content: "You are a helpful AI Assistant." },
+//   { role: "user", content: "Write a nextjs route" },
+//   {
+//     role: "assistant",
+//     content:
+//       "Sure! Here's an example of a basic Next.js route:\n\n```\n// pages/about.js\n\nfunction About() {\n  return (\n    <div>\n      <h1>About Page</h1>\n      <p>This is the about page!</p>\n    </div>\n  )\n}\n\nexport default About;\n```\n\nThis code defines a simple Next.js route that renders an About page with a header and paragraph of text.\n\nTo create a new route, simply create a new file under the `/pages` directory with the desired name (e.g. `contact.js`), and define the route's contents as a React component. Remember to export the component using `export default` so that it can be imported and used elsewhere in your application!",
+//   },
+//   {
+//     role: "user",
+//     content:
+//       "could you add a login to the middle? and explain the whole thing?",
+//   },
+//   {
+//     role: "assistant",
+//     content:
+//       'Sure! Here\'s an example of a Next.js route that includes a login form:\n\n```\n// pages/about.js\n\nimport { useState } from "react";\n\nfunction About() {\n  const [email, setEmail] = useState("");\n  const [password, setPassword] = useState("");\n  const [loading, setLoading] = useState(false);\n  const [error, setError] = useState("");\n\n  const handleSubmit = async (event) => {\n    event.preventDefault();\n    setLoading(true);\n    setError("");\n\n    try {\n      // Call your login API here and handle the response\n      setLoading(false);\n    } catch (error) {\n      setError("Invalid email or password");\n      setLoading(false);\n    }\n  };\n\n  return (\n    <div>\n      <h1>About Page</h1>\n      <p>This is the about page!</p>\n\n      <form onSubmit={handleSubmit}>\n        <label>\n          Email:\n          <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} />\n        </label>\n        <br />\n        <label>\n          Password:\n          <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} />\n        </label>\n        <br />\n        {error && <p>{error}</p>}\n        <button disabled={loading}>Login</button>\n      </form>\n    </div>\n  );\n}\n\nexport default About;\n```\n\nHere\'s a breakdown of what\'s happening in the code:\n\n1. We import the `useState` hook from React, which allows us to manage state in our component.\n\n2. We define four state variables using `useState`:\n\n  - `email`: A string representing the user\'s email address.\n  \n  - `password`: A string representing the user\'s password.\n  \n  - `loading`: A boolean representing whether or not the login form is currently being submitted.\n  \n  - `error`: A string representing any error messages that occur during the login process.\n\n3. We define a function `handleSubmit` that will be called when the user submits the login form. \n\n4. In `handleSubmit`, we prevent the default form submission behavior using `event.preventDefault()`, so that we can handle the form submission ourselves.\n\n5. We set `loading` to `true` to indicate that the form submission is in progress.\n\n6. We clear any previous error messages by setting `error` to an empty string.\n\n7. We try to make a request to our login API (you should replace the comments with your actual login API calls). If the request is successful, we can handle the successful login by navigating to the appropriate page. If the request fails, we set `error` to an appropriate string (in this case, "Invalid email or password").\n\n8. In the `return` statement, we render a basic login form with two input fields for email and password, a submit button, and an error message (if applicable). \n\n9. We use the `disabled` attribute on the submit button to prevent the user from submitting the form while a request is in progress (indicated by the `loading` state variable). \n\nSo overall, this example code shows how to create a Next.js route that includes a basic login form. Obviously, you will need to customize this code to meet your specific requirements, such as adding validation to the email and password fields, integrating with your own authentication system, and so on. But this should give you a good starting point to build from!',
+//   },
+// ];
+
+function useChat(initMessages: Message[] = DEFAULT_INIT) {
   const [disabled, setDisabled] = useState(false);
   const [messages, setMessages] = useState<Message[]>(initMessages);
 
@@ -127,9 +128,7 @@ function useChat(initMessages: Message[] = LARGE_INIT) {
           if (sliced === "[DONE]") continue;
           try {
             const packet = JSON.parse(sliced);
-            const newMessagePiece = (
-              packet.choices[0].delta.content || ""
-            ).replace("e", "i");
+            const newMessagePiece = packet.choices[0].delta.content || "";
             newMessage += newMessagePiece;
             setMessages([
               ...newMessages,
