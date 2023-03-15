@@ -4,8 +4,6 @@ export async function POST(req: Request) {
   const reqBody = await req.json();
   const messages = reqBody.messages;
 
-  console.log("chat-api", messages);
-
   const openaiResp = await openai.createChatCompletion(
     {
       model: "gpt-3.5-turbo",
