@@ -1,8 +1,13 @@
 "use client";
 
+import { createClient } from "@supabase/supabase-js";
 import { ChatCompletionResponseMessage } from "openai";
 import { useState } from "react";
 
+export const supabase = createClient(
+  "https://iezsgbmknwbyqxorwwee.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllenNnYm1rbndieXF4b3J3d2VlIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzU0NjEyODYsImV4cCI6MTk5MTAzNzI4Nn0.I0zs8yJ3EzAt-WXQMRbDTeIaTg9LzepozvL-ukvZc9s"
+);
 // A tailwind react component that renders a chat input
 const ChatInput = ({
   sendMessage,
@@ -71,9 +76,39 @@ function useChat(
           messages: newMessages,
         }),
       });
-      const openaiResponse = await response.json();
-      const newMessage = openaiResponse.choices[0].message as Message;
-      setMessages([...newMessages, newMessage]);
+      const reader = response.body?.getReader();
+      let newMessage = "";
+      for (
+        let { value, done } = await reader?.read();
+        !done;
+        { value, done } = await reader?.read()
+      ) {
+        // stream message out
+        const strVal = new TextDecoder().decode(value);
+        const vals = strVal.split("\n\n");
+        for (const val of vals) {
+          if (!val.startsWith("data: ")) {
+            continue;
+          }
+          const sliced = val.slice(5).trim();
+          if (sliced === "[DONE]") continue;
+          try {
+            const packet = JSON.parse(sliced);
+            const newMessagePiece = packet.choices[0].delta.content || "";
+            newMessage += newMessagePiece;
+            setMessages([
+              ...newMessages,
+              { role: "assistant", content: newMessage },
+            ]);
+          } catch (e) {
+            console.log({ val, e });
+          }
+        }
+      }
+      console.log("done");
+      // const openaiResponse = await response.json();
+      // const newMessage = openaiResponse.choices[0].message as Message;
+      // setMessages([...newMessages, newMessage]);
       setDisabled(false);
     },
   };

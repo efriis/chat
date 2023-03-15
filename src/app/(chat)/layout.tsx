@@ -55,6 +55,12 @@ export default function RootLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const user = {
+    name: "Erick Friis",
+    handle: "efriis",
+    photoUrl: "https://images.unsplash.com/photo-1533827432537-70133748f5c8",
+  };
+
   return (
     <>
       {/*
@@ -215,15 +221,15 @@ export default function RootLayout({
                     <span className="flex min-w-0 items-center justify-between space-x-3">
                       <img
                         className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"
-                        src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80"
+                        src={user.photoUrl}
                         alt=""
                       />
                       <span className="flex min-w-0 flex-1 flex-col">
                         <span className="truncate text-sm font-medium text-gray-900">
-                          Jessy Schwarz
+                          {user.name}
                         </span>
                         <span className="truncate text-sm text-gray-500">
-                          @jessyschwarz
+                          @{user.handle}
                         </span>
                       </span>
                     </span>

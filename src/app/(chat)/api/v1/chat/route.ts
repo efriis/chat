@@ -1,16 +1,19 @@
 import openai from "@/lib/openai";
-import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
-  const reqBody = await request.json();
+export async function POST(req: Request) {
+  const reqBody = await req.json();
   const messages = reqBody.messages;
 
   console.log("chat-api", messages);
 
-  const response = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages,
-  });
+  const openaiResp = await openai.createChatCompletion(
+    {
+      model: "gpt-3.5-turbo",
+      messages,
+      stream: true,
+    },
+    { responseType: "stream" }
+  );
 
-  return NextResponse.json(response.data);
+  return new Response(openaiResp.data as unknown as ReadableStream);
 }
