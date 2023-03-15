@@ -2,7 +2,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+### Installing dependencies
+
+- Install node (18) and yarn (1.22)
+- Install dependencies for the repo with `cd git_repos/chat && yarn`
+
+### Running the Development Server
 
 ```bash
 npm run dev
