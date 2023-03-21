@@ -1,14 +1,9 @@
 "use client";
 
-import { createClient } from "@supabase/supabase-js";
 import { ChatCompletionResponseMessage } from "openai";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
-export const supabase = createClient(
-  "https://iezsgbmknwbyqxorwwee.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllenNnYm1rbndieXF4b3J3d2VlIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzU0NjEyODYsImV4cCI6MTk5MTAzNzI4Nn0.I0zs8yJ3EzAt-WXQMRbDTeIaTg9LzepozvL-ukvZc9s"
-);
 // A tailwind react component that renders a chat input
 const ChatInput = ({
   sendMessage,
@@ -50,12 +45,12 @@ const ChatInput = ({
 // a tailwind react component that renders a chat message
 const ChatMessage = ({ role, content }: Message) => {
   return (
-    <div className="flex flex-grow space-x-4 items-center justify-start w-full min-h-20">
-      <div className="w-20 grow-0 p-1 text-white bg-blue-500 rounded-md text-center">
+    <div className="flex items-center justify-start flex-grow w-full space-x-4 min-h-20">
+      <div className="w-20 p-1 text-center text-white bg-blue-500 rounded-md grow-0">
         {role}
       </div>
-      <div className="grow min-h-20 px-2 border-2 border-gray-300 rounded-md">
-        <div className="prose max-w-full">
+      <div className="px-2 border-2 border-gray-300 rounded-md grow min-h-20">
+        <div className="max-w-full prose">
           <ReactMarkdown>{content}</ReactMarkdown>
         </div>
       </div>
@@ -89,7 +84,10 @@ const DEFAULT_INIT: Message[] = [
 //   },
 // ];
 
-function useChat(initMessages: Message[] = DEFAULT_INIT) {
+function useChat(
+  initMessages: Message[] = DEFAULT_INIT,
+  model: string = "gpt-3.5-turbo"
+) {
   const [disabled, setDisabled] = useState(false);
   const [messages, setMessages] = useState<Message[]>(initMessages);
 
@@ -108,14 +106,15 @@ function useChat(initMessages: Message[] = DEFAULT_INIT) {
         method: "POST",
         body: JSON.stringify({
           messages: newMessages,
+          model,
         }),
       });
       const reader = response.body?.getReader();
       let newMessage = "";
       for (
-        let { value, done } = await reader?.read();
+        let { value, done } = (await reader?.read()) as any;
         !done;
-        { value, done } = await reader?.read()
+        { value, done } = (await reader?.read()) as any
       ) {
         // stream message out
         const strVal = new TextDecoder().decode(value);
@@ -147,9 +146,14 @@ function useChat(initMessages: Message[] = DEFAULT_INIT) {
   };
 }
 
+import { useSearchParams } from "next/navigation";
+
 // A tailwind react component that renders a chat
 const Chat = () => {
-  const { messages, sendMessage, disabled } = useChat();
+  const searchParams = useSearchParams();
+  const model = searchParams.get("model") || "gpt-3.5-turbo";
+
+  const { messages, sendMessage, disabled } = useChat(DEFAULT_INIT, model);
 
   useEffect(() => {
     console.log(JSON.stringify(messages));
@@ -157,12 +161,12 @@ const Chat = () => {
 
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-full">
-      <div className="w-full grow space-y-4 p-4 lg:p-6">
+      <div className="w-full p-4 space-y-4 grow lg:p-6">
         {messages.map((m, i) => (
           <ChatMessage key={i} role={m.role} content={m.content} />
         ))}
       </div>
-      <div className="w-full grow-0 h-20 sticky backdrop-blur-2xl border-t border-gray-400 bottom-0 px-4 lg:px-6">
+      <div className="sticky bottom-0 w-full h-20 px-4 border-t border-gray-400 grow-0 backdrop-blur-2xl lg:px-6">
         <ChatInput sendMessage={sendMessage} disabled={disabled} />
       </div>
     </div>

@@ -1,17 +1,29 @@
+import obsgenClient from "@/lib/obsgen";
 import openai from "@/lib/openai";
 
 export async function POST(req: Request) {
   const reqBody = await req.json();
   const messages = reqBody.messages;
+  const model = reqBody.model || "gpt-3.5-turbo";
 
-  const openaiResp = await openai.createChatCompletion(
+  const obsgenPromise = obsgenClient.logEvent({
+    messages: JSON.stringify(messages),
+    model,
+    type: "chat-sent",
+  });
+
+  const openaiPromise = openai.createChatCompletion(
     {
-      model: "gpt-3.5-turbo",
+      model,
       messages,
       stream: true,
     },
     { responseType: "stream" }
   );
 
-  return new Response(openaiResp.data as unknown as ReadableStream);
+  const [_, openaiResp] = await Promise.all([obsgenPromise, openaiPromise]);
+
+  const stream = openaiResp.data as unknown as ReadableStream;
+
+  return new Response(stream);
 }

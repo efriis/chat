@@ -1,9 +1,10 @@
 import "server-only";
 
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
+import constants from "./constants";
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: constants.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 

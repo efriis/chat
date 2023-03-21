@@ -2287,6 +2287,11 @@ object.values@^1.1.6:
     define-properties "^1.1.4"
     es-abstract "^1.20.4"
 
+obsgen@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/obsgen/-/obsgen-0.0.2.tgz#ee05b44f7e8ba03574215887efb413a0a9a09e57"
+  integrity sha512-cHq3Bo2Z8zs4Zh94q1/h850EOdhl49mWq6w/PRs3RXp1CeTxphv8l0ck6yRgb0OfWiBqHNA76gJw7+r1CwGoiw==
+
 once@^1.3.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
