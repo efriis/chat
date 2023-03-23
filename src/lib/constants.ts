@@ -4,6 +4,7 @@ const constants_keys = [
   "NEXT_PUBLIC_SUPABASE_ANON_KEY",
   "SUPABASE_SECRET_KEY",
   "OBSGEN_API_KEY",
+  "VERCEL_GIT_COMMIT_SHA",
 ] as const;
 
 type Constants = {

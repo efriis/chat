@@ -1,3 +1,4 @@
+import constants from "@/lib/constants";
 import obsgenClient from "@/lib/obsgen";
 import openai from "@/lib/openai";
 
@@ -5,12 +6,18 @@ export async function POST(req: Request) {
   const reqBody = await req.json();
   const messages = reqBody.messages;
   const model = reqBody.model || "gpt-3.5-turbo";
+  const session = reqBody.session;
+
+  const message = messages[messages.length - 1];
 
   // async log inbound event
   const obsgenPromise = obsgenClient.logEvent({
-    messages: JSON.stringify(messages),
+    message: message.content,
+    role: message.role,
     model,
     type: "chat-received",
+    deployment: constants.VERCEL_GIT_COMMIT_SHA,
+    session_id: session,
   });
 
   // async call to OpenAI
@@ -47,7 +54,7 @@ export async function POST(req: Request) {
       const strVal = new TextDecoder("utf-8").decode(chunk);
       const vals = strVal.split("\n\n");
       for (const val of vals) {
-        if (!val.startsWith("data: ")) {
+        if (!val.startsWith("data: ") || val === "data: [DONE]") {
           continue;
         }
         const sliced = val.slice(5).trim();
@@ -64,9 +71,12 @@ export async function POST(req: Request) {
     },
     flush(controller) {
       obsgenClient.logEvent({
-        messages: accumulator,
+        message: accumulator,
+        role: "assistant",
         type: "chat-sent",
         model,
+        deployment: constants.VERCEL_GIT_COMMIT_SHA,
+        session_id: session,
       });
     },
   });
