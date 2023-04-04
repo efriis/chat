@@ -1,7 +1,7 @@
 "use client";
 
 import { ChatCompletionResponseMessage } from "openai";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 // A tailwind react component that renders a chat input
@@ -70,9 +70,12 @@ function useChat(
 ) {
   const [disabled, setDisabled] = useState(false);
   const [messages, setMessages] = useState<Message[]>(initMessages);
+  const [uuid, setUuid] = useState<string | undefined>(undefined);
 
-  // a static randomly generated session id:
-  const uuid = useMemo(() => crypto.randomUUID(), []);
+  useEffect(() => {
+    if (uuid) return;
+    setUuid(crypto.randomUUID());
+  }, [uuid]);
 
   return {
     messages,
